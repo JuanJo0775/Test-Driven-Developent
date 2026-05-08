@@ -1,0 +1,24 @@
+name: Pipeline de Pruebas Continuas
+
+on: [push, pull_request]  # Se activa en cada push o PR
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest  # Máquina virtual limpia en la nube
+
+    steps:
+      - uses: actions/checkout@v3  # Descarga el código del repo
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install -r calculadora_pipeline/requirements.txt  # Instala librerías
+
+      - name: Ejecutar pruebas unitarias
+        run: pytest --cov=calculadora_pipeline/src calculadora_pipeline/tests/  # Corre pytest y mide cobertura
+
+      - name: Mostrar reporte de cobertura
+        run: pytest --cov=calculadora_pipeline/src --cov-report=term-missing calculadora_pipeline/tests/
